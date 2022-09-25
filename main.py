@@ -16,7 +16,7 @@ def get_threads(f='',prefixid='',newset='',page=1,pp=25,daysprune=0):
 def get_img_urls(page):
     pagedata = requests.get(page).text
     soup = bs4.BeautifulSoup(pagedata,'lxml')
-    posts = soup.find_all('blockquote',attrs={'class':'postcontent restore '})
+    posts = soup.find_all('div',attrs={'class':'postrow'})
     urls={'vipr':[],
           'imx':[]}
     for post in posts:
