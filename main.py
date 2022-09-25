@@ -25,7 +25,7 @@ def get_img_urls(page):
                 urls['vipr'].append(u.get('src').replace('/th/','/i/'))
             elif 'imx' in u.get('src'):
                 urls['imx'].append(u.get('src').replace('/t/','/i/'))
-    print(urls)
+    print('URLs : 'urls)
     if urls['vipr'] == []:
         return soup.find('title').string,urls['imx']
     else:
