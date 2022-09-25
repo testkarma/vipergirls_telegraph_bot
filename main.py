@@ -25,7 +25,6 @@ def get_img_urls(page):
                 urls['vipr'].append(u.get('src').replace('/th/','/i/'))
             elif 'imx' in u.get('src'):
                 urls['imx'].append(u.get('src').replace('/t/','/i/'))
-    print('URLs : ',urls)
     if urls['vipr'] == []:
         return soup.find('title').string,urls['imx']
     else:
@@ -40,14 +39,9 @@ def download_all_imgs(img_urls):
         
 def create_page(auth_token,title,img_urls):
     tg = Telegraph(auth_token)
-    # tg_img_urls = [(tg.upload_file(BytesIO(requests.get(url).content))[0]['src'],url) for url in img_urls]
     tg_img_urls = []
     for i,url in enumerate(img_urls):
         tg_img_urls.append((tg.upload_file(BytesIO(requests.get(url).content))[0]['src'],url))
-        # print(f'{i/len(img_urls)}\r',end='')
-    print('LENGTH of TG_IMG_URLS : ',len(tg_img_urls))
-    print('LENGTH of IMG_URLS : ',len(img_urls))
-    # content = '<img src=\"https://telegra.ph/'+'\"><img src=\"https://telegra.ph/'.join(tg_img_urls)+'\">'
     content = ''.join([f'<img src=\"https://telegra.ph/{x}\" alt=\"{y}\">\n' for x,y in tg_img_urls])
     tgraph_page = tg.create_page(title,html_content=content)
     return tgraph_page['url']
@@ -77,7 +71,6 @@ if new_threads:
         if img_urls:
             with open('log.txt','w+') as file:
                 file.write(str(img_urls))
-            print('test print : ',img_urls)
             link = create_page(auth_token,title,img_urls)
             bot.send_message(5015371671,link)
             with open('sent.txt','a') as file:
