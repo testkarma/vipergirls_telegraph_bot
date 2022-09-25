@@ -76,6 +76,7 @@ if __name__ == '__main__':
         for thread in new_threads:
             title, img_urls = get_img_urls(thread)
             if img_urls:
+                print('test print : ',img_urls)
                 link = create_page(auth_token,title,img_urls)
                 bot.send_message(5015371671,link)
                 with open('sent.txt','a') as file:
