@@ -44,6 +44,8 @@ def create_page(auth_token,title,img_urls):
     for i,url in enumerate(img_urls):
         tg_img_urls.append((tg.upload_file(BytesIO(requests.get(url).content))[0]['src'],url))
         # print(f'{i/len(img_urls)}\r',end='')
+    print('LENGTH of TG_IMG_URLS : ',len(tg_img_urls))
+    print('LENGTH of IMG_URLS : ',len(img_urls))
     # content = '<img src=\"https://telegra.ph/'+'\"><img src=\"https://telegra.ph/'.join(tg_img_urls)+'\">'
     content = ''.join([f'<img src=\"https://telegra.ph/{x}\" alt=\"{y}\">\n' for x,y in tg_img_urls])
     tgraph_page = tg.create_page(title,html_content=content)
