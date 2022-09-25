@@ -75,7 +75,7 @@ if new_threads:
     for thread in new_threads:
         title, img_urls = get_img_urls(thread)
         if img_urls:
-            with open('log.txt') as file:
+            with open('log.txt','w+') as file:
                 file.write(str(img_urls))
             print('test print : ',img_urls)
             link = create_page(auth_token,title,img_urls)
