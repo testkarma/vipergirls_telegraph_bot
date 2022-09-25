@@ -25,6 +25,7 @@ def get_img_urls(page):
                 urls['vipr'].append(u.get('src').replace('/th/','/i/'))
             elif 'imx' in u.get('src'):
                 urls['imx'].append(u.get('src').replace('/t/','/i/'))
+    print(urls)
     if urls['vipr'] == []:
         return soup.find('title').string,urls['imx']
     else:
@@ -74,9 +75,10 @@ if __name__ == '__main__':
         bot = telebot.TeleBot(api_key)
         for thread in new_threads:
             title, img_urls = get_img_urls(thread)
-            link = create_page(auth_token,title,img_urls)
-            bot.send_message(5015371671,link)
-            with open('sent.txt','a') as file:
-                file.writelines([i+'\n' for i in new_threads])
+            if img_urls:
+                link = create_page(auth_token,title,img_urls)
+                bot.send_message(5015371671,link)
+                with open('sent.txt','a') as file:
+                    file.writelines(link+'\n')
     else:
         print('No new threads found. Closing App')
