@@ -52,34 +52,33 @@ def create_page(auth_token,title,img_urls):
     tgraph_page = tg.create_page(title,html_content=content)
     return tgraph_page['url']
 
-if __name__ == '__main__':
-    Site = namedtuple('Site','f,prefixid')
-    sites = (Site('304','Vixen_com'),Site('304','Tushy_com'),Site('304','TushyRaw_com'),Site('304','Deeper_com'),Site('304','Blacked_com'),Site('304','BlackedRaw_com'),Site('305','Slayed_com'))
-    
-    auth_token = os.environ['TELEGRAPH_TOKEN']
-    chat_id = os.environ['CHAT_ID']
-    api_key = os.environ['TELEGRAM_API_KEY']
-    
-    sent_threads = []
-    with open('sent.txt','r') as file:
-        sent_threads = [i[:-1] for i in file.readlines()]
-    new_threads = []
-    for site in sites:
-        threads = get_threads(site.f,site.prefixid,newset=1)
-        for i in threads:
-            if i not in sent_threads:
-                new_threads.append(i)
-    
-    if new_threads:
-        print('Found new threads!.\n',*[f'\t- {i}\n' for i in new_threads])
-        bot = telebot.TeleBot(api_key)
-        for thread in new_threads:
-            title, img_urls = get_img_urls(thread)
-            if img_urls:
-                print('test print : ',img_urls)
-                link = create_page(auth_token,title,img_urls)
-                bot.send_message(5015371671,link)
-                with open('sent.txt','a') as file:
-                    file.writelines(link+'\n')
-    else:
-        print('No new threads found. Closing App')
+Site = namedtuple('Site','f,prefixid')
+sites = (Site('304','Vixen_com'),Site('304','Tushy_com'),Site('304','TushyRaw_com'),Site('304','Deeper_com'),Site('304','Blacked_com'),Site('304','BlackedRaw_com'),Site('305','Slayed_com'))
+
+auth_token = os.environ['TELEGRAPH_TOKEN']
+chat_id = os.environ['CHAT_ID']
+api_key = os.environ['TELEGRAM_API_KEY']
+
+sent_threads = []
+with open('sent.txt','r') as file:
+    sent_threads = [i[:-1] for i in file.readlines()]
+new_threads = []
+for site in sites:
+    threads = get_threads(site.f,site.prefixid,newset=1)
+    for i in threads:
+        if i not in sent_threads:
+            new_threads.append(i)
+
+if new_threads:
+    print('Found new threads!.\n',*[f'\t- {i}\n' for i in new_threads])
+    bot = telebot.TeleBot(api_key)
+    for thread in new_threads:
+        title, img_urls = get_img_urls(thread)
+        if img_urls:
+            print('test print : ',img_urls)
+            link = create_page(auth_token,title,img_urls)
+            bot.send_message(5015371671,link)
+            with open('sent.txt','a') as file:
+                file.writelines(link+'\n')
+else:
+    print('No new threads found. Closing App')
