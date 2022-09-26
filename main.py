@@ -72,6 +72,6 @@ if new_threads:
             link = create_page(auth_token,title,img_urls)
             bot.send_message(5015371671,link)
             with open('sent.txt','a') as file:
-                file.writelines(link+'\n')
+                file.writelines(thread+'\n')
 else:
     print('No new threads found. Closing App')
