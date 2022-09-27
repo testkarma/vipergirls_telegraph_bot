@@ -2,6 +2,7 @@ import bs4, requests, telebot,os
 from collections import namedtuple
 from telegraph import Telegraph
 from io import BytesIO
+from PIL import Image
 
 def get_threads(f='',prefixid='',newset='',page=1,pp=25,daysprune=0):
     thread_urls = []
@@ -42,7 +43,10 @@ def create_page(auth_token,title,img_urls):
     tg_img_urls = []
     for i,url in enumerate(img_urls):
         try:
-            tg_img_urls.append((tg.upload_file(BytesIO(requests.get(url).content))[0]['src'],url))
+            img = Image.open(BytesIO(requests.get(url).content))
+            img.save('temp.jpg','jpeg',quality)
+            tg_img_urls.append((tg.upload_file('temp.jpg')[0]['src'],url))
+            os.remove('temp.jpg')
         except:
             tg_img_urls.append((url,url))
     content = ''.join([f'<img src=\"https://telegra.ph/{x}\" alt=\"{y}\">\n' for x,y in tg_img_urls])
