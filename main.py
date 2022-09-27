@@ -41,7 +41,10 @@ def create_page(auth_token,title,img_urls):
     tg = Telegraph(auth_token)
     tg_img_urls = []
     for i,url in enumerate(img_urls):
-        tg_img_urls.append((tg.upload_file(BytesIO(requests.get(url).content))[0]['src'],url))
+        try:
+            tg_img_urls.append((tg.upload_file(BytesIO(requests.get(url).content))[0]['src'],url))
+        except:
+            tg_img_urls.append((url,url))
     content = ''.join([f'<img src=\"https://telegra.ph/{x}\" alt=\"{y}\">\n' for x,y in tg_img_urls])
     tgraph_page = tg.create_page(title,html_content=content)
     return tgraph_page['url']
