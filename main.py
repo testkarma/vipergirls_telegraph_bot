@@ -70,7 +70,7 @@ for site in sites:
 if new_threads:
     print('Found new threads!.\n',*[f'\t- {i}\n' for i in new_threads])
     bot = telebot.TeleBot(api_key)
-    for thread in new_threads:
+    for thread in new_threads[::-1]:
         title, img_urls = get_img_urls(thread)
         if img_urls:
             link = create_page(auth_token,title,img_urls)
