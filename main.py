@@ -18,18 +18,25 @@ def get_img_urls(page):
     pagedata = requests.get(page).text
     soup = bs4.BeautifulSoup(pagedata,'lxml')
     posts = soup.find_all('div',attrs={'class':'postrow'})
-    urls={'vipr':[],
-          'imx':[]}
+    urls=[]
     for post in posts:
+        post_i = {'vipr':[],'imx':[]}
         for u in post.find_all('img',attrs={'border':'0','alt':''}):
             if 'vipr' in u.get('src'):
-                urls['vipr'].append(u.get('src').replace('/th/','/i/'))
+                post_i['vipr'].append(u.get('src').replace('/th/','/i/'))
             elif 'imx' in u.get('src'):
-                urls['imx'].append(u.get('src').replace('/t/','/i/'))
-    if urls['vipr'] == []:
-        return soup.find('title').string,urls['imx']
+                post_i['imx'].append(u.get('src').replace('/t/','/i/'))
+        urls.append(post_i)
+    url = {'vipr':[],'imx':[]}
+    for i in urls:
+        if len(i['vipr']) > len(url['vipr']):
+            url['vipr'] = i['vipr']
+        if len(i['imx']) > len(url['imx']):
+            url['imx'] = i['imx']
+    if url['vipr'] == []:
+        return soup.find('title').string,url['imx']
     else:
-        return soup.find('title').string,urls['vipr']
+        return soup.find('title').string,url['vipr']
 
 def download_all_imgs(img_urls):
     for i,url in enumerate(img_urls):
