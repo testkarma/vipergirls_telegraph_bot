@@ -82,7 +82,8 @@ if new_threads:
         if img_urls:
             link = create_page(auth_token,title,img_urls)
             bot.send_message(chat_id,link)
-            bot.send_message(chat_id,f"[{title.replace('-',r'\-')}]({thread})",parse_mode='MarkdownV2')
+            t = title.replace('- ','')
+            bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2')
             with open('sent.txt','a') as file:
                 file.writelines(thread+'\n')
 else:
