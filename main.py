@@ -83,7 +83,7 @@ if new_threads:
             link = create_page(auth_token,title,img_urls)
             bot.send_message(chat_id,link)
             t = ''.join([i for i in title if i.isalnum() or i.isspace()])
-            bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2')
+            bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
             with open('sent.txt','a') as file:
                 file.writelines(thread+'\n')
 else:
