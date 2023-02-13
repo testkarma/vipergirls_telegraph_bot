@@ -53,7 +53,7 @@ def create_page(auth_token,title,img_urls):
         img.save('temp.jpg','jpeg',quality=95)
         with open('temp.jpg','rb') as f:
             temg_jpg = f.read()
-        while true:
+        while True:
             try:
                 req = requests.post('https://telegra.ph/upload',files={'select-file':BytesIO(temp_jpg)})
             except:
