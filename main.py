@@ -55,9 +55,9 @@ def create_page(auth_token,title,img_urls):
             temg_jpg = f.read()
         try:
             req = requests.post('https://telegra.ph/upload',files={'select-file':BytesIO(temp_jpg)})
+            tg_img_urls.append((req.json()[0]['src'],url))
         except:
             pass
-        tg_img_urls.append((req.json()[0]['src'],url))
         os.remove('temp.jpg')
     content = ''.join([f'<img src=\"{x}\" alt=\"{y}\">\n' for x,y in tg_img_urls])
     tgraph_page = tg.create_page(title,html_content=content)
