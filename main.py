@@ -56,7 +56,7 @@ def create_page(auth_token,title,img_urls):
             try:
                 req = requests.post('https://telegra.ph/upload',files={'select-file':f})
                 tg_img_urls.append((req.json()[0]['src'],url))
-                print(req.json()[0]['src'],url)
+#                 print(req.json()[0]['src'],url)
             except Exception as e:
                 print(e)
         os.remove('temp.jpg')
