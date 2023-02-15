@@ -51,17 +51,21 @@ def create_page(auth_token,title,img_urls):
     for i,url in enumerate(img_urls):
         img = Image.open(BytesIO(requests.get(url).content))
         img.save('temp.jpg','jpeg',quality=95)
+        temp_jpg = ''
         with open('temp.jpg','rb') as f:
-            temg_jpg = f.read()
-        try:
-            req = requests.post('https://telegra.ph/upload',files={'select-file':BytesIO(temp_jpg)})
-            tg_img_urls.append((req.json()[0]['src'],url))
-        except:
-            pass
+            try:
+                req = requests.post('https://telegra.ph/upload',files={'select-file':f})
+                tg_img_urls.append((req.json()[0]['src'],url))
+                print(req.json()[0]['src'],url)
+            except Exception as e:
+                print(e)
         os.remove('temp.jpg')
-    content = ''.join([f'<img src=\"{x}\" alt=\"{y}\">\n' for x,y in tg_img_urls])
-    tgraph_page = tg.create_page(title,html_content=content)
-    return tgraph_page['url']
+    if tg_img_urls:
+        content = ''.join([f'<img src=\"{x}\" alt=\"{y}\">\n' for x,y in tg_img_urls])
+        tgraph_page = tg.create_page(title,html_content=content)
+        return tgraph_page['url']
+    else:
+        return None
 
 Site = namedtuple('Site','f,prefixid')
 sites = (Site('304','Vixen_com'),Site('304','Tushy_com'),Site('304','TushyRaw_com'),Site('304','Deeper_com'),Site('304','Blacked_com'),Site('304','BlackedRaw_com'),Site('305','Slayed_com'))
@@ -87,7 +91,7 @@ if new_threads:
         title, img_urls = get_img_urls(thread)
         if img_urls:
             link = create_page(auth_token,title,img_urls)
-            bot.send_message(chat_id,link)
+            bot.send_message(chat_id,str(link))
             t = ''.join([i for i in title if i.isalnum() or i.isspace()])
             bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
             with open('sent.txt','a') as file:
