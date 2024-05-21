@@ -123,7 +123,7 @@ if __name__ == '__main__':
     
     if new_msg_threads:
         print('Found new messages!.\n',*[f'\t- {i}\n' for i in new_msg_threads])
-        for thread in new_msg_threads[::-1]:
+        for thread in new_msg_threads:
             title, img_urls = get_img_urls(thread)
             if img_urls:
                 link = create_page(auth_token,title,img_urls)
