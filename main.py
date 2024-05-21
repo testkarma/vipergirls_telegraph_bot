@@ -3,6 +3,7 @@ from collections import namedtuple
 from telegraph import Telegraph
 from io import BytesIO
 from PIL import Image
+from urllib.parse import urlparse
 
 def get_threads(f='',prefixid='',newset='',page=1,pp=25,daysprune=0):
     thread_urls = []
@@ -67,37 +68,68 @@ def create_page(auth_token,title,img_urls):
     else:
         return None
 
-Site = namedtuple('Site','f,prefixid')
-sites = (Site('304','Vixen_com'),Site('304','Tushy_com'),Site('304','TushyRaw_com'),Site('304','Deeper_com'),Site('304','Blacked_com'),Site('304','BlackedRaw_com'),Site('305','Slayed_com'))
 
-auth_token = os.environ['TELEGRAPH_TOKEN']
-chat_id = os.environ['CHAT_ID']
-api_key = os.environ['TELEGRAM_API_KEY']
+if __name__ == '__main__':
+    auth_token = os.environ['TELEGRAPH_TOKEN']
+    chat_id = os.environ['CHAT_ID']
+    api_key = os.environ['TELEGRAM_API_KEY']
 
-sent_threads = []
-with open('sent.txt','r') as file:
-    sent_threads = [i[:-1] for i in file.readlines()]
-new_threads = []
-for site in sites:
-    threads = get_threads(site.f,site.prefixid,newset=1)
-    for i in threads:
-        if i not in sent_threads:
-            new_threads.append(i)
+    Site = namedtuple('Site','f,prefixid')
+    sites = (Site('304','Vixen_com'),Site('304','Tushy_com'),Site('304','TushyRaw_com'),Site('304','Deeper_com'),Site('304','Blacked_com'),Site('304','BlackedRaw_com'),Site('305','Slayed_com'))
 
-if new_threads:
-    print('Found new threads!.\n',*[f'\t- {i}\n' for i in new_threads])
     bot = telebot.TeleBot(api_key)
-    for thread in new_threads[::-1]:
-        title, img_urls = get_img_urls(thread)
-        if img_urls:
-            link = create_page(auth_token,title,img_urls)
-            bot.send_message(chat_id,str(link))
-            t = ''.join([i for i in title if i.isalnum() or i.isspace()])
-            try:
-                bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
-            except Exception as e:
-                print(e)
-            with open('sent.txt','a') as file:
-                file.writelines(thread+'\n')
-else:
-    print('No new threads found. Closing App')
+
+    sent_threads = []
+    with open('sent.txt','r') as file:
+        sent_threads = [i[:-1] for i in file.readlines()]
+    new_threads = []
+    for site in sites:
+        threads = get_threads(site.f,site.prefixid,newset=1)
+        for i in threads:
+            if i not in sent_threads:
+                new_threads.append(i)
+
+    if new_threads:
+        print('Found new threads!.\n',*[f'\t- {i}\n' for i in new_threads])
+        for thread in new_threads[::-1]:
+            title, img_urls = get_img_urls(thread)
+            if img_urls:
+                link = create_page(auth_token,title,img_urls)
+                bot.send_message(chat_id,str(link))
+                t = ''.join([i for i in title if i.isalnum() or i.isspace()])
+                try:
+                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
+                except Exception as e:
+                    print(e)
+                with open('sent.txt','a') as file:
+                    file.writelines(thread+'\n')
+    else:
+        print('No new threads found. Closing App')
+        
+        
+    new_msg_threads = []
+    offset = 0
+    with open('offset.txt','r') as f:
+        offset = int(f.readline())
+    msg_updates = bot.get_updates(offset=offset)
+    
+    with open('offset.txt','w') as f:
+        f.write(str(msg_updates[-1].update_id))
+    
+    for msg in msg_updates[1:]:
+        parsed = urlparse(msg.message.text)
+        if parsed.scheme and parsed.netloc:
+            new_msg_threads.append(msg.message.text)
+    
+    if new_msg_threads:
+        print('Found new messages!.\n',*[f'\t- {i}\n' for i in new_msg_threads])
+        for thread in new_msg_threads[::-1]:
+            title, img_urls = get_img_urls(thread)
+            if img_urls:
+                link = create_page(auth_token,title,img_urls)
+                bot.send_message(chat_id,str(link))
+                t = ''.join([i for i in title if i.isalnum() or i.isspace()])
+                try:
+                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
+                except Exception as e:
+                    print(e)
