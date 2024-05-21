@@ -128,8 +128,3 @@ if __name__ == '__main__':
             if img_urls:
                 link = create_page(auth_token,title,img_urls)
                 bot.send_message(chat_id,str(link))
-                t = ''.join([i for i in title if i.isalnum() or i.isspace()])
-                try:
-                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2')
-                except Exception as e:
-                    print(e)
