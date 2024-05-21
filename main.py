@@ -98,7 +98,7 @@ if __name__ == '__main__':
                 bot.send_message(chat_id,str(link))
                 t = ''.join([i for i in title if i.isalnum() or i.isspace()])
                 try:
-                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
+                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2')
                 except Exception as e:
                     print(e)
                 with open('sent.txt','a') as file:
@@ -130,6 +130,6 @@ if __name__ == '__main__':
                 bot.send_message(chat_id,str(link))
                 t = ''.join([i for i in title if i.isalnum() or i.isspace()])
                 try:
-                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
+                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2')
                 except Exception as e:
                     print(e)
