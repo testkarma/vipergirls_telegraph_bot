@@ -3,7 +3,15 @@ from collections import namedtuple
 from telegraph import Telegraph
 from io import BytesIO
 from PIL import Image
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
+
+def _get_post_id(url):
+    qs = urlparse(url).query
+    if 'p' in qs:
+        p = parse_qs(qs)['p'][0]
+        return 'post_'+p
+    else:
+        return ''
 
 def get_threads(f='',prefixid='',newset='',page=1,pp=25,daysprune=0):
     thread_urls = []
@@ -18,7 +26,13 @@ def get_threads(f='',prefixid='',newset='',page=1,pp=25,daysprune=0):
 def get_img_urls(page):
     pagedata = requests.get(page).text
     soup = bs4.BeautifulSoup(pagedata,'lxml')
-    posts = soup.find_all('div',attrs={'class':'postrow'})
+    
+    body = soup.find('body')
+    post_id = _get_post_id(page)
+    if post_id:
+        body = soup.find('li',attrs={'id':post_id})
+    
+    posts = body.find_all('div',attrs={'class':'postrow'})
     urls=[]
     for post in posts:
         post_i = {'vipr':[],'imx':[]}
