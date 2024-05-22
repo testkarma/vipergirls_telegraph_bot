@@ -71,7 +71,6 @@ def create_page(auth_token,title,img_urls):
             try:
                 req = requests.post('https://telegra.ph/upload',files={'select-file':f})
                 tg_img_urls.append((req.json()[0]['src'],url))
-#                 print(req.json()[0]['src'],url)
             except Exception as e:
                 print(e)
         os.remove('temp.jpg')
@@ -112,7 +111,7 @@ if __name__ == '__main__':
                 bot.send_message(chat_id,str(link))
                 t = ''.join([i for i in title if i.isalnum() or i.isspace()])
                 try:
-                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2')
+                    bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
                 except Exception as e:
                     print(e)
                 with open('sent.txt','a') as file:
@@ -131,9 +130,12 @@ if __name__ == '__main__':
         f.write(str(msg_updates[-1].update_id))
     
     for msg in msg_updates[1:]:
-        parsed = urlparse(msg.message.text)
-        if parsed.scheme and parsed.netloc:
-            new_msg_threads.append(msg.message.text)
+        try:
+            parsed = urlparse(msg.message.text)
+            if parsed.scheme and parsed.netloc:
+                new_msg_threads.append(msg.message.text)
+        except Exception as e:
+            print(e)
     
     if new_msg_threads:
         print('Found new messages!.\n',*[f'\t- {i}\n' for i in new_msg_threads])
