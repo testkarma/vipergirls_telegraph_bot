@@ -39,7 +39,7 @@ def get_img_urls(page):
         for u in post.find_all('img',attrs={'border':'0','alt':''}):
             if 'vipr' in u.get('src'):
                 post_i['vipr'].append(u.get('src').replace('/th/','/i/'))
-            elif 'imx' in u.get('src'):
+            elif 'imx.to/u' in u.get('src'):
                 post_i['imx'].append(u.get('src').replace('/t/','/i/'))
         urls.append(post_i)
     url = {'vipr':[],'imx':[]}
