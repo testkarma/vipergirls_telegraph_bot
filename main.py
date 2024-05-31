@@ -35,21 +35,28 @@ def get_img_urls(page):
     posts = body.find_all('div',attrs={'class':'postrow'})
     urls=[]
     for post in posts:
-        post_i = {'vipr':[],'imx':[]}
+        post_i = {'vipr':[],'imx':[],'pixhost':[]}
         for u in post.find_all('img',attrs={'border':'0','alt':''}):
-            if 'vipr' in u.get('src'):
+            src = u.get('src')
+            if 'vipr' in src:
                 post_i['vipr'].append(u.get('src').replace('/th/','/i/'))
-            elif 'imx.to/u' in u.get('src'):
+            elif 'imx.to/u' in src:
                 post_i['imx'].append(u.get('src').replace('/t/','/i/'))
+            elif 'pixhost' in src:
+                post_i['pixhost'].append(u.get('src').replace('thumb','image').replace('//t','//img'))
         urls.append(post_i)
-    url = {'vipr':[],'imx':[]}
+    url = {'vipr':[],'imx':[],'pixhost':[]}
     for i in urls:
         if len(i['vipr']) > len(url['vipr']):
             url['vipr'] = i['vipr']
+        if len(i['pixhost']) > len(url['pixhost']):
+            url['pixhost'] = i['pixhost']
         if len(i['imx']) > len(url['imx']):
             url['imx'] = i['imx']
-    if url['vipr'] == []:
+    if url['vipr'] == [] and url['pixhost'] == []:
         return soup.find('title').string,url['imx']
+    elif url['vipr'] == [] and url['imx'] == []:
+        return soup.find('title').string,url['pixhost']
     else:
         return soup.find('title').string,url['vipr']
 
@@ -60,10 +67,12 @@ def download_all_imgs(img_urls):
             with open(f'{i:03}.jpg','wb+') as img_file:
                 img_file.write(img_data.content)
         
-def create_page(auth_token,title,img_urls):
+def create_page(auth_token,title,img_urls,skip=None):
     tg = Telegraph(auth_token)
     tg_img_urls = []
     for i,url in enumerate(img_urls):
+        if i == skip:
+            continue
         img = Image.open(BytesIO(requests.get(url).content))
         img.save('temp.jpg','jpeg',quality=95)
         temp_jpg = ''
@@ -119,7 +128,6 @@ if __name__ == '__main__':
     else:
         print('No new threads found. Closing App')
         
-        
     new_msg_threads = []
     offset = 0
     with open('offset.txt','r') as f:
@@ -130,17 +138,23 @@ if __name__ == '__main__':
         f.write(str(msg_updates[-1].update_id))
     
     for msg in msg_updates[1:]:
+        s = msg.message.text.split(' ')
         try:
-            parsed = urlparse(msg.message.text)
+            msg_text = s[0]
+            if len(s) == 2:
+                skip = int(s[1])
+            else:
+                skip = None
+            parsed = urlparse(msg_text)
             if parsed.scheme and parsed.netloc:
-                new_msg_threads.append(msg.message.text)
+                new_msg_threads.append((msg_text, skip))
         except Exception as e:
             print(e)
     
     if new_msg_threads:
         print('Found new messages!.\n',*[f'\t- {i}\n' for i in new_msg_threads])
-        for thread in new_msg_threads:
+        for thread, skip in new_msg_threads:
             title, img_urls = get_img_urls(thread)
             if img_urls:
-                link = create_page(auth_token,title,img_urls)
+                link = create_page(auth_token,title,img_urls,skip=skip)
                 bot.send_message(chat_id,str(link))
