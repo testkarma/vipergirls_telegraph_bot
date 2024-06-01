@@ -7,7 +7,7 @@ lxml==4.9.1
 Pillow==9.2.0
 pip==22.2.2
 pyTelegramBotAPI==4.7.0
-requests==2.28.1
+requests[security]
 setuptools==58.1.0
 soupsieve==2.3.2.post1
 telegraph==2.1.0
