@@ -35,17 +35,19 @@ def get_img_urls(page):
     posts = body.find_all('div',attrs={'class':'postrow'})
     urls=[]
     for post in posts:
-        post_i = {'vipr':[],'imx':[],'pixhost':[]}
+        post_i = {'vipr':[],'imx':[],'pixhost':[],'acidimg':[]}
         for u in post.find_all('img',attrs={'border':'0','alt':''}):
             src = u.get('src')
             if 'vipr' in src:
-                post_i['vipr'].append(u.get('src').replace('/th/','/i/'))
+                post_i['vipr'].append(src.replace('/th/','/i/'))
             elif 'imx.to/u' in src:
-                post_i['imx'].append(u.get('src').replace('/t/','/i/'))
+                post_i['imx'].append(src.replace('/t/','/i/'))
             elif 'pixhost' in src:
-                post_i['pixhost'].append(u.get('src').replace('thumb','image').replace('//t','//img'))
+                post_i['pixhost'].append(src.replace('thumb','image').replace('//t','//img'))
+            elif 'acidimg' in src:
+                post_i['acidimg'].append(src.replace('small','big'))
         urls.append(post_i)
-    url = {'vipr':[],'imx':[],'pixhost':[]}
+    url = {'vipr':[],'imx':[],'pixhost':[],'acidimg':[]}
     for i in urls:
         if len(i['vipr']) > len(url['vipr']):
             url['vipr'] = i['vipr']
@@ -53,12 +55,17 @@ def get_img_urls(page):
             url['pixhost'] = i['pixhost']
         if len(i['imx']) > len(url['imx']):
             url['imx'] = i['imx']
-    if url['vipr'] == [] and url['pixhost'] == []:
-        return soup.find('title').string,url['imx']
-    elif url['vipr'] == [] and url['imx'] == []:
-        return soup.find('title').string,url['pixhost']
-    else:
+        if len(i['acidimg']) > len(url['acidimg']):
+            url['acidimg'] = i['acidimg']
+    print(url)
+    if url['vipr'] != []:
         return soup.find('title').string,url['vipr']
+    if url['pixhost'] != []:
+        return soup.find('title').string,url['pixhost']
+    if url['acidimg'] != []:
+        return soup.find('title').string,url['acidimg']
+    if url['imx'] != []:
+        return soup.find('title').string,url['imx']
 
 def download_all_imgs(img_urls):
     for i,url in enumerate(img_urls):
