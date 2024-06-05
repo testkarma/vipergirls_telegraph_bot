@@ -145,6 +145,8 @@ if __name__ == '__main__':
         f.write(str(msg_updates[-1].update_id))
     
     for msg in msg_updates[1:]:
+        if msg.message == None:
+            continue
         if msg.message.text == None:
             continue
         s = msg.message.text.split(' ')
