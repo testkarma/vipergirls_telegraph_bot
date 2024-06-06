@@ -147,6 +147,8 @@ if __name__ == '__main__':
     for msg in msg_updates[1:]:
         if msg.message == None:
             continue
+        if msg.message.chat.id != int(chat_id):
+            continue
         if msg.message.text == None:
             continue
         s = msg.message.text.split(' ')
