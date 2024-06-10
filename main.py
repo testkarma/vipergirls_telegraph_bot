@@ -140,9 +140,10 @@ if __name__ == '__main__':
     with open('offset.txt','r') as f:
         offset = int(f.readline())
     msg_updates = bot.get_updates(offset=offset)
-    
-    with open('offset.txt','w') as f:
-        f.write(str(msg_updates[-1].update_id))
+
+    if msg_updates:
+        with open('offset.txt','w') as f:
+            f.write(str(msg_updates[-1].update_id))
     
     for msg in msg_updates[1:]:
         if msg.message == None:
