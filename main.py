@@ -41,7 +41,11 @@ def get_img_urls(page):
             if 'vipr' in src:
                 post_i['vipr'].append(src.replace('/th/','/i/'))
             elif 'imx.to/u' in src:
-                post_i['imx'].append(src.replace('/t/','/i/'))
+                t_src = src
+                if '/t/' not in src:
+                    tmp_r = requests.head(src)
+                    t_src = tmp_r.next.url
+                post_i['imx'].append(t_src.replace('/t/','/i/'))
             elif 'pixhost' in src:
                 post_i['pixhost'].append(src.replace('thumb','image').replace('//t','//img'))
             elif 'acidimg' in src:
