@@ -129,7 +129,7 @@ if __name__ == '__main__':
             title, img_urls = get_img_urls(thread)
             if img_urls:
                 link = create_page(auth_token,title,img_urls)
-                bot.send_message(chat_id,str(link))
+                bot.send_message(chat_id,str(link.replace('telegra.ph/','te.legra.ph/')))
                 t = ''.join([i for i in title if i.isalnum() or i.isspace()])
                 try:
                     bot.send_message(chat_id,f'[{t}]({thread})',parse_mode='MarkdownV2',disable_web_page_preview=True)
@@ -176,4 +176,4 @@ if __name__ == '__main__':
             title, img_urls = get_img_urls(thread)
             if img_urls:
                 link = create_page(auth_token,title,img_urls,skip=skip)
-                bot.send_message(chat_id,str(link))
+                bot.send_message(chat_id,str(link.replace('telegra.ph/','te.legra.ph/')))
