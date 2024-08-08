@@ -106,7 +106,7 @@ if __name__ == '__main__':
     auth_token = os.environ['TELEGRAPH_TOKEN']
     chat_id = os.environ['CHAT_ID']
     api_key = os.environ['TELEGRAM_API_KEY']
-    print(' '.join(list(auth_token)))
+    # print(' '.join(list(auth_token)))
 
     Site = namedtuple('Site','f,prefixid')
     sites = (Site('304','Vixen_com'),Site('304','Tushy_com'),Site('304','TushyRaw_com'),Site('304','Deeper_com'),Site('304','Blacked_com'),Site('304','BlackedRaw_com'),Site('305','Slayed_com'))
