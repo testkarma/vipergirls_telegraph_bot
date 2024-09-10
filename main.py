@@ -2,8 +2,10 @@ import bs4, requests, telebot,os
 from collections import namedtuple
 from telegraph import Telegraph
 from io import BytesIO
-from PIL import Image
 from urllib.parse import urlparse, parse_qs
+from PIL import Image, ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 
 def _get_post_id(url):
     qs = urlparse(url).query
