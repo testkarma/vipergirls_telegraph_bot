@@ -26,6 +26,7 @@ jobs:
         env:
           CHAT_ID: ${{ secrets.CHAT_ID }}
           TELEGRAM_API_KEY: ${{ secrets.TELEGRAM_API_KEY }}
+          TELEGRAM_API_KEY_2: ${{ secrets.TELEGRAM_API_KEY_2 }}
           TELEGRAPH_TOKEN: ${{ secrets.TELEGRAPH_TOKEN }}
         run: python main.py
           
