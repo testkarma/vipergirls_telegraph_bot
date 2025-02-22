@@ -197,7 +197,7 @@ async def process_new_threads(bot: Bot, upload_bot: Bot, chat_id: str, telegraph
                                              telegraph_token, semaphore, session)
                 if page_url:
                     # Send the Telegraph page link via the messaging bot
-                    await bot.send_message(chat_id, page_url, link_preview_options=LinkPreviewOptions(is_disabled=False))
+                    await bot.send_message(chat_id, page_url.replace('telegra.ph/','te.legra.ph/'), link_preview_options=LinkPreviewOptions(is_disabled=False))
                     # safe_title = ''.join(ch for ch in title if ch.isalnum() or ch.isspace())
                     # try:
                     #     await bot.send_message(chat_id,
@@ -251,7 +251,7 @@ async def process_message_updates(bot: Bot, upload_bot: Bot, chat_id: str, teleg
                 page_url = await create_page(upload_bot, chat_id, title, img_urls,
                                              telegraph_token, semaphore, session, skip=skip)
                 if page_url:
-                    await bot.send_message(chat_id, page_url, link_preview_options=LinkPreviewOptions(is_disabled=False))
+                    await bot.send_message(chat_id, page_url.replace('telegra.ph/','te.legra.ph/'), link_preview_options=LinkPreviewOptions(is_disabled=False))
 
 
 async def main():
